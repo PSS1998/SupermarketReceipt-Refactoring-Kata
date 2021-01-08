@@ -5,12 +5,12 @@ import java.util.Objects;
 public class ReceiptItem {
     private final ProductQuantity item;
     private final double price;
-    private double totalPrice;
+    //private double totalPrice;
 
-    ReceiptItem(ProductQuantity item, double price, double totalPrice) {
+    ReceiptItem(ProductQuantity item, double price) {
         this.item = item;
         this.price = price;
-        this.totalPrice = totalPrice;
+        //this.totalPrice = totalPrice;
     }
 
     public double getPrice() {
@@ -26,7 +26,7 @@ public class ReceiptItem {
     }
 
     public double getTotalPrice() {
-        return totalPrice;
+        return price*item.getQuantity();
     }
 
     @Override
@@ -35,7 +35,6 @@ public class ReceiptItem {
         if (o == null || getClass() != o.getClass()) return false;
         ReceiptItem that = (ReceiptItem) o;
         return Double.compare(that.price, price) == 0 &&
-                Double.compare(that.totalPrice, totalPrice) == 0 &&
                 Double.compare(that.item.getQuantity(), item.getQuantity()) == 0 &&
                 Objects.equals(item.getProduct(), that.item.getProduct());
     }
@@ -43,7 +42,7 @@ public class ReceiptItem {
     @Override
     public int hashCode() {
 
-        return Objects.hash(item.getProduct(), price, totalPrice, item.getQuantity());
+        return Objects.hash(item.getProduct(), price, item.getQuantity());
     }
 
 

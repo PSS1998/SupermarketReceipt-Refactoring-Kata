@@ -31,7 +31,7 @@ public class ReceiptPrinterTest {
     @Test
     public void total() {
 
-        receipt.addProduct(toothbrush, 1, 0.99, 2*0.99);
+        receipt.addProduct(toothbrush, 1, 0.99, 1*0.99);
         receipt.addProduct(apples, 0.75, 1.99, 1.99*0.75);
         Approvals.verify(new ReceiptPrinter(40).printReceipt(receipt));
     }
