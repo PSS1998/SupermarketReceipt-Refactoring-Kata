@@ -9,35 +9,31 @@ public class SpecialOfferBundles {
     public List<Discount> getDiscount(List<ProductQuantity> shoppingCartItems, Map<List<ProductQuantity>, Offer> offers, SupermarketCatalog catalog) {
         List<Discount> discountList = new ArrayList<Discount>();
         for (Offer offer : offers.values()) {
-            boolean bundleOfferNotFound = false;
-            Integer numberOfBundlesInCart = Integer.MAX_VALUE;
-            for (ProductQuantity productQuantity : offer.bundleProducts) {
-                boolean bundleItemFound = false;
-                Product productBundle = productQuantity.getProduct();
-                double quantityBundle = productQuantity.getQuantity();
-                double quantity = 0;
-                for (ProductQuantity product : shoppingCartItems) {
-                    if (product.getProduct().equals(productBundle)) {
-                        quantity += product.getQuantity();
-                    }
-                }
-                if (quantity >= quantityBundle) {
-                    bundleItemFound = true;
-                }
-                numberOfBundlesInCart = bundleItemFound ? Math.min((int) (quantity / quantityBundle), numberOfBundlesInCart) : 0;
-                if (!bundleItemFound) {
-                    bundleOfferNotFound = true;
-                    break;
-                }
+            Integer numberOfBundlesInCart = calculateNumberOfBundlesInCart(shoppingCartItems, offer);
+            if (numberOfBundlesInCart != 0) {
+                double discountValue = this.calculateDiscount(offer, catalog, numberOfBundlesInCart);
+                Discount discount = new Discount(offer.bundleProducts, "Discounted Bundle", discountValue);
+                discountList.add(discount);
             }
-            if (bundleOfferNotFound) {
-                continue;
-            }
-            double discountValue = this.calculateDiscount(offer, catalog, numberOfBundlesInCart);
-            Discount discount = new Discount(offer.bundleProducts, "Discounted Bundle", discountValue);
-            discountList.add(discount);
         }
         return discountList;
+    }
+
+    private Integer calculateNumberOfBundlesInCart(List<ProductQuantity> shoppingCartItems, Offer offer) {
+        Integer numberOfBundlesInCart = Integer.MAX_VALUE;
+        for (ProductQuantity productQuantity : offer.bundleProducts) {
+            double quantity = 0;
+            for (ProductQuantity product : shoppingCartItems) {
+                if (product.getProduct().equals(productQuantity.getProduct())) {
+                    quantity += product.getQuantity();
+                }
+            }
+            numberOfBundlesInCart = (quantity >= productQuantity.getQuantity()) ? Math.min((int) (quantity / productQuantity.getQuantity()), numberOfBundlesInCart) : 0;
+            if (numberOfBundlesInCart == 0) {
+                break;
+            }
+        }
+        return numberOfBundlesInCart;
     }
 
     private double calculateDiscount(Offer offer, SupermarketCatalog catalog, Integer numberOfBundles) {
