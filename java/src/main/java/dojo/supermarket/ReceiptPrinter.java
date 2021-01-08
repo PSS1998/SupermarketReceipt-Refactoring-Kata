@@ -7,9 +7,10 @@ import java.util.Locale;
 public class ReceiptPrinter {
 
     private final int columns;
+    private final int defaultColumnsValue = 40;
 
     public ReceiptPrinter() {
-        this(40);
+        this.columns = defaultColumnsValue;
     }
 
     public ReceiptPrinter(int columns) {
