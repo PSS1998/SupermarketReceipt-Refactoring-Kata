@@ -42,13 +42,17 @@ class ShoppingCart {
     private double calDiscountAmount(double quantity, Offer offer, double unitPrice) {
         switch (offer.offerType) {
             case TenPercentDiscount:
-                return -(quantity * unitPrice * offer.offerType.getDiscountPercent() / 100.0);
+                return -(getBasePrice(quantity, unitPrice) * offer.offerType.getDiscountPercent() / 100.0);
             case ThreeForTwo:
                 double ThreeForTowTotal = (quantity / offer.offerType.getDiscountUnit() * 2 * unitPrice) + quantity % offer.offerType.getDiscountUnit() * unitPrice;
-                return -(quantity * unitPrice - ThreeForTowTotal);
+                return -(getBasePrice(quantity, unitPrice) - ThreeForTowTotal);
             default:
                 double defaultTotal = offer.argument * (quantity / offer.offerType.getDiscountUnit()) + quantity % offer.offerType.getDiscountUnit() * unitPrice;
-                return -(unitPrice * quantity - defaultTotal);
+                return -(getBasePrice(quantity, unitPrice)  - defaultTotal);
         }
+    }
+
+    private double getBasePrice(double quantity, double unitPrice) {
+        return quantity * unitPrice;
     }
 }
