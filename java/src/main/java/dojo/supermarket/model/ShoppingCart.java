@@ -46,10 +46,10 @@ class ShoppingCart {
             case TenPercentDiscount:
                 return -(getBasePrice(quantity, unitPrice) * offer.offerType.getDiscountPercent());
             case ThreeForTwo:
-                double ThreeForTowTotal = (quantity / offer.offerType.getDiscountUnit() * 2 * unitPrice) + quantity % offer.offerType.getDiscountUnit() * unitPrice;
+                double ThreeForTowTotal = ((int)quantity / offer.offerType.getDiscountUnit() * 2 * unitPrice) + (int)quantity % offer.offerType.getDiscountUnit() * unitPrice;
                 return -(getBasePrice(quantity, unitPrice) - ThreeForTowTotal);
             default:
-                double defaultTotal = offer.argument * (quantity / offer.offerType.getDiscountUnit()) + quantity % offer.offerType.getDiscountUnit() * unitPrice;
+                double defaultTotal = offer.argument * ((int)quantity / offer.offerType.getDiscountUnit()) + (int)quantity % offer.offerType.getDiscountUnit() * unitPrice;
                 return -(getBasePrice(quantity, unitPrice) - defaultTotal);
         }
     }

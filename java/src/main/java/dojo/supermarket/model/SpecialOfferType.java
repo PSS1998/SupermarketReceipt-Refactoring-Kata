@@ -25,7 +25,7 @@ public enum SpecialOfferType {
             case FiveForAmount:
                 return "5 for " + argument;
             case TenPercentDiscount:
-                return "10.0 off";
+                return "10.0% off";
             default:
                 return "";
         }
