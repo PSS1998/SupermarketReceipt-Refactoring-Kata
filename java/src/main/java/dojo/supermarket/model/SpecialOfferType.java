@@ -16,4 +16,19 @@ public enum SpecialOfferType {
         }
     }
 
+    public String getDescription() {
+        switch (this){
+            case ThreeForTwo:
+                return "3 for 2";
+            case TwoForAmount:
+                return "2 for ";
+            case FiveForAmount:
+                return "5 for ";
+            case TenPercentDiscount:
+                return "10.0 off";
+            default:
+                return "";
+        }
+    }
+
 }
