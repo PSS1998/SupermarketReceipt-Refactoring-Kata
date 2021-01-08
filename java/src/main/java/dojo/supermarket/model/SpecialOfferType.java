@@ -1,7 +1,7 @@
 package dojo.supermarket.model;
 
 public enum SpecialOfferType {
-    ThreeForTwo, TenPercentDiscount, TwoForAmount, FiveForAmount;
+    ThreeForTwo, TenPercentDiscount, TwoForAmount, FiveForAmount, Bundle;
 
     public int getDiscountUnit() {
         switch (this){

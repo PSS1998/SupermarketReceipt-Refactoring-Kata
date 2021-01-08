@@ -2,6 +2,7 @@ package dojo.supermarket;
 
 import dojo.supermarket.model.*;
 
+import java.util.List;
 import java.util.Locale;
 
 public class ReceiptPrinter {
@@ -46,8 +47,22 @@ public class ReceiptPrinter {
     }
 
     private String presentDiscount(Discount discount) {
-        String name = discount.getDescription() + "(" + discount.getProduct().getName() + ")";
-        String value = presentPrice(discount.getDiscountAmount());
+        String name;
+        String value;
+        if (discount.getProduct() != null) {
+            name = discount.getDescription() + "(" + discount.getProduct().getName() + ")";
+            value = presentPrice(discount.getDiscountAmount());
+        }
+        else {
+            List<ProductQuantity> discountBundle = discount.getProductList();
+            String productNames = "";
+            for (ProductQuantity productQuantity : discountBundle){
+                productNames += productQuantity.getProduct().getName() + ":" + productQuantity.getQuantity() + ", ";
+            }
+            productNames = productNames.substring(0, productNames.length() - 3);
+            name = discount.getDescription() + "(" + productNames + ") ";
+            value = presentPrice(discount.getDiscountAmount());
+        }
 
         return formatLineWithWhitespace(name, value);
     }

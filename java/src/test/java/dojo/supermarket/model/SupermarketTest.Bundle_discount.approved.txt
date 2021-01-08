@@ -1,0 +1,7 @@
+apples                              7.96
+  1.99 * 4.000
+toothbrush                          3.96
+  0.99 * 4
+Discounted Bundle(apples:2.0, toothbrush:2.) -1.19
+
+Total:                             10.73

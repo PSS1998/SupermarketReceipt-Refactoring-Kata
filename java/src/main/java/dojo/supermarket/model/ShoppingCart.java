@@ -26,11 +26,19 @@ class ShoppingCart {
         }
     }
 
-    void handleOffers(Receipt receipt, Map<Product, Offer> offers, SupermarketCatalog catalog) {
+    void handleOffers(Receipt receipt, Map<Product, Offer> offers, Map<List<ProductQuantity>, Offer> bundleOffers, SupermarketCatalog catalog) {
         productQuantities.keySet().forEach(product -> {
             if (haveOffer(product, offers.get(product)))
                 receipt.addDiscount(createDiscount(catalog, product, offers.get(product)));
         });
+        List<Discount> discountList = new ArrayList<Discount>();
+        SpecialOfferBundles bundleOffer = new SpecialOfferBundles();
+        discountList = bundleOffer.getDiscount(items, bundleOffers, catalog);
+        if (discountList != null) {
+            for (Discount discount : discountList) {
+                receipt.addDiscount(discount);
+            }
+        }
     }
 
     private boolean haveOffer(Product product, Offer offer) {

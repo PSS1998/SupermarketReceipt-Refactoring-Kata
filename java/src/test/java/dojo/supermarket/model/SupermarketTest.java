@@ -5,6 +5,9 @@ import org.approvaltests.Approvals;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class SupermarketTest {
     private SupermarketCatalog catalog;
     private Teller teller;
@@ -141,6 +144,20 @@ public class SupermarketTest {
     public void FiveForY_discount_withFour() {
         theCart.addItemQuantity(apples, 4);
         teller.addSpecialOffer(SpecialOfferType.FiveForAmount, apples,8.99);
+        Receipt receipt = teller.checksOutArticlesFrom(theCart);
+        Approvals.verify(new ReceiptPrinter(40).printReceipt(receipt));
+    }
+
+    @Test
+    public void Bundle_discount() {
+        theCart.addItemQuantity(apples, 4.0);
+        theCart.addItemQuantity(toothbrush, 4.0);
+        ProductQuantity applesProduct = new ProductQuantity(apples, 2.0);
+        ProductQuantity toothbrushProduct = new ProductQuantity(toothbrush, 2.0);
+        List<ProductQuantity> bundleList = new ArrayList<ProductQuantity>();
+        bundleList.add(applesProduct);
+        bundleList.add(toothbrushProduct);
+        teller.addSpecialBundleOffer(SpecialOfferType.Bundle, bundleList,10.0);
         Receipt receipt = teller.checksOutArticlesFrom(theCart);
         Approvals.verify(new ReceiptPrinter(40).printReceipt(receipt));
     }
