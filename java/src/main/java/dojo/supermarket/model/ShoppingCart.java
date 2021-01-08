@@ -34,28 +34,13 @@ public class ShoppingCart {
     }
 
     void handleOffers(Receipt receipt, Map<Product, Offer> offers, SupermarketCatalog catalog) {
-        for (Product p : productQuantities().keySet()) {
-            double quantity = productQuantities.get(p);
-            if (offers.containsKey(p)) {
-
-                Offer offer = offers.get(p);
-                double unitPrice = catalog.getUnitPrice(p);
-                Discount discount = null;
-
-                if (offer.offerType == SpecialOfferType.TwoForAmount && offer.offerType.haveMinimumRequiredAmount(quantity)) {
-                    discount = new Discount(p, offer.offerType.getDescription() + offer.argument, - calDiscountAmount(quantity, offer, unitPrice));
+        for (Product product : productQuantities().keySet()) {
+            double quantity = productQuantities.get(product);
+            if (offers.containsKey(product)) {
+                Offer offer = offers.get(product);
+                if (offer.offerType.haveMinimumRequiredAmount(quantity)){
+                    receipt.addDiscount(new Discount(product, offer.offerType.getDescription(offer.argument), - calDiscountAmount(quantity, offer, catalog.getUnitPrice(product))));
                 }
-                if (offer.offerType == SpecialOfferType.ThreeForTwo && offer.offerType.haveMinimumRequiredAmount(quantity)) {
-                    discount = new Discount(p, offer.offerType.getDescription(), - calDiscountAmount(quantity, offer, unitPrice));
-                }
-                if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
-                    discount = new Discount(p, offer.offerType.getDescription(),  - calDiscountAmount(quantity, offer, unitPrice));
-                }
-                if (offer.offerType == SpecialOfferType.FiveForAmount && offer.offerType.haveMinimumRequiredAmount(quantity)) {
-                    discount = new Discount(p, offer.offerType.getDescription() + offer.argument, - calDiscountAmount(quantity, offer, unitPrice));
-                }
-                if (discount != null)
-                    receipt.addDiscount(discount);
             }
 
         }

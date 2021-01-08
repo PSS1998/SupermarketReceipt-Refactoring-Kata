@@ -16,14 +16,14 @@ public enum SpecialOfferType {
         }
     }
 
-    public String getDescription() {
+    public String getDescription(double argument) {
         switch (this){
             case ThreeForTwo:
                 return "3 for 2";
             case TwoForAmount:
-                return "2 for ";
+                return "2 for " + argument;
             case FiveForAmount:
-                return "5 for ";
+                return "5 for " + argument;
             case TenPercentDiscount:
                 return "10.0 off";
             default:
@@ -38,6 +38,8 @@ public enum SpecialOfferType {
     }
 
     public boolean haveMinimumRequiredAmount(double quantity) {
+        if (this == SpecialOfferType.TenPercentDiscount)
+            return true;
         return  (int)quantity >= getDiscountUnit();
     }
 
