@@ -37,4 +37,8 @@ public enum SpecialOfferType {
         return 0;
     }
 
+    public boolean haveMinimumRequiredAmount(double quantity) {
+        return  (int)quantity >= getDiscountUnit();
+    }
+
 }

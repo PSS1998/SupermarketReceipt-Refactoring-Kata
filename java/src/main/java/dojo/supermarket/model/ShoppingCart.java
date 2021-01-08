@@ -40,34 +40,37 @@ public class ShoppingCart {
 
                 Offer offer = offers.get(p);
                 double unitPrice = catalog.getUnitPrice(p);
-                int quantityAsInt = (int) quantity;
                 Discount discount = null;
 
-                int numberOfXs = quantityAsInt / offer.offerType.getDiscountUnit();
-
-                if (offer.offerType == SpecialOfferType.TwoForAmount && quantityAsInt >= 2) {
-                    double total = offer.argument * (numberOfXs) + quantityAsInt % 2 * unitPrice;
-                    double discountN = unitPrice * quantity - total;
-                    discount = new Discount(p, offer.offerType.getDescription() + offer.argument, -discountN);
+                if (offer.offerType == SpecialOfferType.TwoForAmount && offer.offerType.haveMinimumRequiredAmount(quantity)) {
+                    discount = new Discount(p, offer.offerType.getDescription() + offer.argument, - calDiscountAmount(quantity, offer, unitPrice));
                 }
-                if (offer.offerType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2) {
-                    double total = (numberOfXs * 2 * unitPrice) + quantityAsInt % 3 * unitPrice;
-                    double discountAmount = quantity * unitPrice - total;
-                    discount = new Discount(p, offer.offerType.getDescription(), -discountAmount);
+                if (offer.offerType == SpecialOfferType.ThreeForTwo && offer.offerType.haveMinimumRequiredAmount(quantity)) {
+                    discount = new Discount(p, offer.offerType.getDescription(), - calDiscountAmount(quantity, offer, unitPrice));
                 }
                 if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
-                    double discountAmount = -quantity * unitPrice * offer.offerType.getDiscountPercent() / 100.0;
-                    discount = new Discount(p, offer.offerType.getDescription(), discountAmount);
+                    discount = new Discount(p, offer.offerType.getDescription(),  - calDiscountAmount(quantity, offer, unitPrice));
                 }
-                if (offer.offerType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
-                    double total = offer.argument * numberOfXs + quantityAsInt % 5 * unitPrice;
-                    double discountTotal = unitPrice * quantity - total;
-                    discount = new Discount(p, offer.offerType.getDescription() + offer.argument, -discountTotal);
+                if (offer.offerType == SpecialOfferType.FiveForAmount && offer.offerType.haveMinimumRequiredAmount(quantity)) {
+                    discount = new Discount(p, offer.offerType.getDescription() + offer.argument, - calDiscountAmount(quantity, offer, unitPrice));
                 }
                 if (discount != null)
                     receipt.addDiscount(discount);
             }
 
+        }
+    }
+
+    private double calDiscountAmount(double quantity, Offer offer, double unitPrice) {
+        switch (offer.offerType){
+            case TenPercentDiscount:
+                return quantity * unitPrice * offer.offerType.getDiscountPercent() / 100.0;
+            case ThreeForTwo:
+                double ThreeForTowTotal = (quantity / offer.offerType.getDiscountUnit() * 2 * unitPrice) + quantity % offer.offerType.getDiscountUnit() * unitPrice;
+                return quantity * unitPrice - ThreeForTowTotal;
+            default:
+                double defaultTotal = offer.argument * (quantity / offer.offerType.getDiscountUnit()) + quantity % offer.offerType.getDiscountUnit() * unitPrice;
+                return unitPrice * quantity - defaultTotal;
         }
     }
 }
