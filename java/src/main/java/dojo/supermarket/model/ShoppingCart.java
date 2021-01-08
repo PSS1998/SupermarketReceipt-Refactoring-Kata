@@ -28,15 +28,17 @@ class ShoppingCart {
 
     void handleOffers(Receipt receipt, Map<Product, Offer> offers, SupermarketCatalog catalog) {
         productQuantities.keySet().forEach(product -> {
-            Offer offer = offers.get(product);
-            if (haveOffer(product, offer)) {
-                receipt.addDiscount(new Discount(product, offer.offerType.getDescription(offer.argument), calDiscountAmount(productQuantities.get(product), offer, catalog.getUnitPrice(product))));
-            }
+            if (haveOffer(product, offers.get(product)))
+                receipt.addDiscount(createDiscount(catalog, product, offers.get(product)));
         });
     }
 
     private boolean haveOffer(Product product, Offer offer) {
         return offer != null && offer.offerType.haveMinimumRequiredAmount(productQuantities.get(product));
+    }
+
+    private Discount createDiscount(SupermarketCatalog catalog, Product product, Offer offer) {
+        return new Discount(product, offer.offerType.getDescription(offer.argument), calDiscountAmount(productQuantities.get(product), offer, catalog.getUnitPrice(product)));
     }
 
     private double calDiscountAmount(double quantity, Offer offer, double unitPrice) {
@@ -48,7 +50,7 @@ class ShoppingCart {
                 return -(getBasePrice(quantity, unitPrice) - ThreeForTowTotal);
             default:
                 double defaultTotal = offer.argument * (quantity / offer.offerType.getDiscountUnit()) + quantity % offer.offerType.getDiscountUnit() * unitPrice;
-                return -(getBasePrice(quantity, unitPrice)  - defaultTotal);
+                return -(getBasePrice(quantity, unitPrice) - defaultTotal);
         }
     }
 
