@@ -31,4 +31,10 @@ public enum SpecialOfferType {
         }
     }
 
+    public double getDiscountPercent() {
+        if (this == SpecialOfferType.TenPercentDiscount)
+            return 10.0;
+        return 0;
+    }
+
 }

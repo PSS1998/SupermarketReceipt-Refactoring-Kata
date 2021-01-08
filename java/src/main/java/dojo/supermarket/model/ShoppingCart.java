@@ -37,29 +37,31 @@ public class ShoppingCart {
         for (Product p : productQuantities().keySet()) {
             double quantity = productQuantities.get(p);
             if (offers.containsKey(p)) {
+
                 Offer offer = offers.get(p);
                 double unitPrice = catalog.getUnitPrice(p);
                 int quantityAsInt = (int) quantity;
                 Discount discount = null;
 
-                if (offer.offerType == SpecialOfferType.TwoForAmount) {
-                    if (quantityAsInt >= 2) {
-                        double total = offer.argument * (quantityAsInt / offer.offerType.getDiscountUnit()) + quantityAsInt % 2 * unitPrice;
-                        double discountN = unitPrice * quantity - total;
-                        discount = new Discount(p, offer.offerType.getDescription() + offer.argument, -discountN);
-                    }
-
-                }
                 int numberOfXs = quantityAsInt / offer.offerType.getDiscountUnit();
+
+                if (offer.offerType == SpecialOfferType.TwoForAmount && quantityAsInt >= 2) {
+                    double total = offer.argument * (numberOfXs) + quantityAsInt % 2 * unitPrice;
+                    double discountN = unitPrice * quantity - total;
+                    discount = new Discount(p, offer.offerType.getDescription() + offer.argument, -discountN);
+                }
                 if (offer.offerType == SpecialOfferType.ThreeForTwo && quantityAsInt > 2) {
-                    double discountAmount = quantity * unitPrice - ((numberOfXs * 2 * unitPrice) + quantityAsInt % 3 * unitPrice);
+                    double total = (numberOfXs * 2 * unitPrice) + quantityAsInt % 3 * unitPrice;
+                    double discountAmount = quantity * unitPrice - total;
                     discount = new Discount(p, offer.offerType.getDescription(), -discountAmount);
                 }
                 if (offer.offerType == SpecialOfferType.TenPercentDiscount) {
-                    discount = new Discount(p, offer.offerType.getDescription(), -quantity * unitPrice * offer.argument / 100.0);
+                    double discountAmount = -quantity * unitPrice * offer.offerType.getDiscountPercent() / 100.0;
+                    discount = new Discount(p, offer.offerType.getDescription(), discountAmount);
                 }
                 if (offer.offerType == SpecialOfferType.FiveForAmount && quantityAsInt >= 5) {
-                    double discountTotal = unitPrice * quantity - (offer.argument * numberOfXs + quantityAsInt % 5 * unitPrice);
+                    double total = offer.argument * numberOfXs + quantityAsInt % 5 * unitPrice;
+                    double discountTotal = unitPrice * quantity - total;
                     discount = new Discount(p, offer.offerType.getDescription() + offer.argument, -discountTotal);
                 }
                 if (discount != null)
